@@ -25,9 +25,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        TicTacToeApp(
-
-                        )
+                        TicTacToeApp()
                     }
 
                 }
@@ -38,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TicTacToeApp() {
-
 }
 
 @Preview(showBackground = true)
