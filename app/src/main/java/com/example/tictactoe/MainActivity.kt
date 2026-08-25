@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,9 +29,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,9 +63,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
-    Column(){
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         GameStats()
         GameBoard()
+        PlayerType()
     }
 
 }
@@ -135,12 +144,13 @@ fun GameStatsPreview() {
 @Composable
 fun GameBoard() {
 
-    Surface(Modifier.padding(start = 15.dp, end = 15.dp,top = 25.dp)) {
-        Column(Modifier.padding(start = 15.dp, end = 15.dp,top = 15.dp)) {
+    Surface(Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp)) {
+        Column(Modifier.padding(start = 15.dp, end = 15.dp, top = 15.dp)) {
             Row() {
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -148,7 +158,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -156,7 +167,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -166,7 +178,8 @@ fun GameBoard() {
             Row() {
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -174,7 +187,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -182,7 +196,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -192,7 +207,8 @@ fun GameBoard() {
             Row() {
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -200,7 +216,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -208,7 +225,8 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f).aspectRatio(1f)
+                        .weight(1f)
+                        .aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -224,4 +242,52 @@ fun GameBoard() {
 @Composable
 fun GameBoardPreview() {
     GameBoard()
+}
+
+@Composable
+fun PlayerType() {
+    Surface(
+        shape = RoundedCornerShape(50.dp), color = Color(0xFFF1F3F4), // Light grey background
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 25.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = "Player X",
+                    tint = Color(0xFF3A86FF),
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF3A86FF)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Circle,
+                    contentDescription = "Player O",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+fun PlayerTypePreview() {
+    PlayerType()
 }
