@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,7 +54,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TicTacToeApp() {
-    GameStats()
+
+    Column(){
+        GameStats()
+        GameBoard()
+    }
+
 }
 
 @Preview(showBackground = true)
@@ -129,12 +135,12 @@ fun GameStatsPreview() {
 @Composable
 fun GameBoard() {
 
-    Surface() {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+    Surface(Modifier.padding(start = 15.dp, end = 15.dp,top = 25.dp)) {
+        Column(Modifier.padding(start = 15.dp, end = 15.dp,top = 15.dp)) {
+            Row() {
                 Box(
                     Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -142,7 +148,7 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -150,43 +156,17 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = "X", fontSize = 40.sp)
                 }
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Row() {
                 Box(
                     Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -194,7 +174,7 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -202,7 +182,33 @@ fun GameBoard() {
                 }
                 Box(
                     Modifier
-                        .weight(1f)
+                        .weight(1f).aspectRatio(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+            }
+            Row() {
+                Box(
+                    Modifier
+                        .weight(1f).aspectRatio(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f).aspectRatio(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f).aspectRatio(1f)
                         .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
