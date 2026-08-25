@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -63,10 +65,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.padding(bottom = 10.dp),horizontalAlignment = Alignment.CenterHorizontally) {
         GameStats()
         GameBoard()
         PlayerType()
+        Spacer(Modifier.padding(top = 40.dp))
+        ResetGame()
     }
 
 }
@@ -248,7 +252,7 @@ fun GameBoardPreview() {
 fun PlayerType() {
     Surface(
         shape = RoundedCornerShape(50.dp), color = Color(0xFFF1F3F4), // Light grey background
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 25.dp)
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp)
     ) {
         Row(
             modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically
@@ -290,4 +294,22 @@ fun PlayerType() {
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 fun PlayerTypePreview() {
     PlayerType()
+}
+
+
+@Composable
+fun ResetGame() {
+    Button({}, Modifier
+        .fillMaxWidth()
+        .padding(start = 25.dp, end = 25.dp)) {
+        Text(text = "Reset",Modifier.padding(5.dp), fontSize = 20.sp)
+    }
+}
+
+@Composable
+@Preview
+fun ResetGamePreview() {
+
+    ResetGame()
+
 }
