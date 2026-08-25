@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,11 +53,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TicTacToeApp() {
+    GameStats()
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun TicTacToePreview() {
     TicTacToeTheme {
         TicTacToeApp()
     }
@@ -64,7 +67,7 @@ fun GreetingPreview() {
 @Composable
 fun GameStats() {
     Surface(Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(top = 25.dp),horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(Modifier.padding(top = 25.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
                     painterResource(R.drawable.ic_circle),
@@ -120,7 +123,99 @@ fun GameStats() {
 @Composable
 @Preview
 fun GameStatsPreview() {
-
     GameStats()
+}
 
+@Composable
+fun GameBoard() {
+
+    Surface() {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "X", fontSize = 40.sp)
+                }
+            }
+        }
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameBoardPreview() {
+    GameBoard()
 }
