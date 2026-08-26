@@ -4,19 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -65,7 +68,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
-    Column(Modifier.padding(bottom = 10.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         GameStats()
         GameBoard()
         PlayerType()
@@ -148,104 +151,38 @@ fun GameStatsPreview() {
 @Composable
 fun GameBoard() {
 
-    Surface(Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp)) {
-        Column(Modifier.padding(start = 15.dp, end = 15.dp, top = 15.dp)) {
-            Row() {
+    Surface(
+        Modifier.padding(start = 35.dp, end = 35.dp, top = 40.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = Color.LightGray,
+        border = BorderStroke(1.dp, color = Color.LightGray)
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            contentPadding = PaddingValues(20.dp),
+            userScrollEnabled = true
+        ) {
+            items(9) { item ->
                 Box(
-                    Modifier
-                        .weight(1f)
+                    modifier = Modifier
                         .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
+                        .padding(5.dp)
+                        .border(
+                            1.dp,
+                            Color.DarkGray.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(30.dp)
+                        ), contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "X", fontSize = 40.sp)
+                    Text(
+                        text = "X",
+                        fontSize = 30.sp,
+                    )
                 }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-            }
-            Row() {
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-            }
-            Row() {
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "X", fontSize = 40.sp)
-                }
+
             }
         }
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameBoardPreview() {
-    GameBoard()
 }
 
 @Composable
@@ -299,10 +236,12 @@ fun PlayerTypePreview() {
 
 @Composable
 fun ResetGame() {
-    Button({}, Modifier
-        .fillMaxWidth()
-        .padding(start = 25.dp, end = 25.dp)) {
-        Text(text = "Reset",Modifier.padding(5.dp), fontSize = 20.sp)
+    Button(
+        {}, Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp, end = 25.dp)
+    ) {
+        Text(text = "Reset", Modifier.padding(5.dp), fontSize = 20.sp)
     }
 }
 
