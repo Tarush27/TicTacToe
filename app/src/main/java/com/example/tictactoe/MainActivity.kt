@@ -207,8 +207,8 @@ fun GameBoard() {
 fun PlayerType() {
     Surface(
         shape = RoundedCornerShape(50.dp),
-        color = Color(0xFFF1F3F4),
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp)
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp), border = BorderStroke(width = 0.5.dp,color = MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically
