@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -117,12 +118,12 @@ fun GameStats() {
                     painterResource(R.drawable.ic_circle),
                     contentDescription = "noughts",
                     Modifier.size(40.dp),
-                    tint = Color.Blue
+                    tint = Color(0xFF40BAD0)
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
                     text = "4 wins",
-                    color = Color.Blue,
+                    color = Color(0xFF40BAD0),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold
@@ -131,14 +132,14 @@ fun GameStats() {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
                     painterResource(R.drawable.ic_cross),
-                    contentDescription = "noughts",
+                    contentDescription = "cross",
                     Modifier.size(40.dp),
-                    tint = Color.Blue
+                    tint = Color(0xFF3E88CE)
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
                     text = "4 wins",
-                    color = Color.Blue,
+                    color = Color(0xFF3E88CE),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold
@@ -149,12 +150,12 @@ fun GameStats() {
                     painterResource(R.drawable.ic_balance),
                     contentDescription = "noughts",
                     Modifier.size(40.dp),
-                    tint = Color.DarkGray.copy(alpha = 0.5f)
+                    tint = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
                     text = "4 draws",
-                    color = Color.DarkGray.copy(alpha = 0.5f),
+                    color = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold
