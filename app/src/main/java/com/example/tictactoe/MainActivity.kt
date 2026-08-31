@@ -1,5 +1,6 @@
 package com.example.tictactoe
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -36,9 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,12 +70,32 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
-    Column(Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        GameStats()
-        GameBoard()
-        PlayerType()
-        Spacer(Modifier.padding(top = 40.dp))
-        ResetGame()
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+
+        Row(
+            Modifier
+                .padding(end = 10.dp, top = 20.dp, bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            GameStatsRail()
+            GameBoardLandscape()
+        }
+
+
+    } else {
+        Column(
+            Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GameStats()
+            GameBoard()
+            PlayerType()
+            Spacer(Modifier.padding(top = 40.dp))
+            ResetGame()
+        }
     }
 
 }
@@ -142,15 +164,9 @@ fun GameStats() {
     }
 }
 
-@Composable
-@Preview
-fun GameStatsPreview() {
-    GameStats()
-}
 
 @Composable
 fun GameBoard() {
-
     Surface(
         Modifier.padding(start = 35.dp, end = 35.dp, top = 40.dp),
         shape = RoundedCornerShape(18.dp),
@@ -159,8 +175,9 @@ fun GameBoard() {
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
+            modifier = Modifier.aspectRatio(1f),
             contentPadding = PaddingValues(20.dp),
-            userScrollEnabled = true
+            userScrollEnabled = false
         ) {
             items(9) { item ->
                 Box(
@@ -188,7 +205,8 @@ fun GameBoard() {
 @Composable
 fun PlayerType() {
     Surface(
-        shape = RoundedCornerShape(50.dp), color = Color(0xFFF1F3F4), // Light grey background
+        shape = RoundedCornerShape(50.dp),
+        color = Color(0xFFF1F3F4),
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp)
     ) {
         Row(
@@ -228,13 +246,6 @@ fun PlayerType() {
 
 
 @Composable
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-fun PlayerTypePreview() {
-    PlayerType()
-}
-
-
-@Composable
 fun ResetGame() {
     Button(
         {}, Modifier
@@ -245,10 +256,115 @@ fun ResetGame() {
     }
 }
 
-@Composable
-@Preview
-fun ResetGamePreview() {
 
-    ResetGame()
+@Composable
+fun GameStatsRail() {
+    Surface() {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(30.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        painterResource(R.drawable.ic_circle),
+                        contentDescription = "noughts",
+                        Modifier.size(40.dp),
+                        tint = Color.Blue
+                    )
+                    Text(
+                        text = "4 wins",
+                        color = Color.Blue,
+                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        painterResource(R.drawable.ic_cross),
+                        contentDescription = "cross",
+                        Modifier.size(40.dp),
+                        tint = Color.Blue
+                    )
+                    Text(
+                        text = "4 wins",
+                        color = Color.Blue,
+                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(Modifier.padding(top = 15.dp))
+            Icon(
+                painterResource(R.drawable.ic_balance),
+                contentDescription = "noughts",
+                Modifier.size(40.dp),
+                tint = Color.DarkGray.copy(alpha = 0.5f)
+            )
+            Spacer(Modifier.padding(top = 5.dp))
+            Text(
+                text = "4 draws",
+                color = Color.DarkGray.copy(alpha = 0.5f),
+                fontSize = 20.sp,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold
+            )
+
+            PlayerType()
+
+            Spacer(Modifier.padding(top = 20.dp))
+            ResetGameLandscape()
+        }
+    }
+}
+
+
+@Composable
+fun ResetGameLandscape() {
+    Button(
+        {}, Modifier.width(300.dp)
+    ) {
+        Text(text = "Reset", fontSize = 20.sp)
+    }
+}
+
+@Composable
+fun GameBoardLandscape() {
+    Surface(
+        Modifier.padding(bottom = 20.dp, top = 15.dp, end = 20.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = Color.LightGray,
+        border = BorderStroke(1.dp, color = Color.LightGray)
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.aspectRatio(1f),
+            contentPadding = PaddingValues(20.dp),
+            userScrollEnabled = false
+        ) {
+            items(9) { item ->
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .padding(5.dp)
+                        .border(
+                            1.dp,
+                            Color.DarkGray.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(30.dp)
+                        ), contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "X",
+                        fontSize = 30.sp,
+                    )
+                }
+
+            }
+        }
+    }
 
 }
