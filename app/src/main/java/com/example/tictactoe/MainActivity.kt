@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
+                            .padding(innerPadding), color = MaterialTheme.colorScheme.surface
                     ) {
                         TicTacToeApp()
                     }
@@ -111,7 +111,7 @@ fun TicTacToePreview() {
 
 @Composable
 fun GameStats() {
-    Surface(Modifier.fillMaxWidth()) {
+    Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface) {
         Row(Modifier.padding(top = 25.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
