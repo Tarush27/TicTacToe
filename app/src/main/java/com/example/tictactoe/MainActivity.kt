@@ -275,11 +275,11 @@ fun GameStatsRail() {
                         painterResource(R.drawable.ic_circle),
                         contentDescription = "noughts",
                         Modifier.size(40.dp),
-                        tint = Color.Blue
+                        tint = Color(0xFF40BAD0)
                     )
                     Text(
                         text = "4 wins",
-                        color = Color.Blue,
+                        color = Color(0xFF40BAD0),
                         fontSize = 20.sp,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
@@ -291,11 +291,11 @@ fun GameStatsRail() {
                         painterResource(R.drawable.ic_cross),
                         contentDescription = "cross",
                         Modifier.size(40.dp),
-                        tint = Color.Blue
+                        tint = Color(0xFF3E88CE)
                     )
                     Text(
                         text = "4 wins",
-                        color = Color.Blue,
+                        color = Color(0xFF3E88CE),
                         fontSize = 20.sp,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
@@ -308,12 +308,12 @@ fun GameStatsRail() {
                 painterResource(R.drawable.ic_balance),
                 contentDescription = "noughts",
                 Modifier.size(40.dp),
-                tint = Color.DarkGray.copy(alpha = 0.5f)
+                tint = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
             )
             Spacer(Modifier.padding(top = 5.dp))
             Text(
                 text = "4 draws",
-                color = Color.DarkGray.copy(alpha = 0.5f),
+                color = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                 fontSize = 20.sp,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold
@@ -342,8 +342,8 @@ fun GameBoardLandscape() {
     Surface(
         Modifier.padding(bottom = 20.dp, top = 15.dp, end = 20.dp),
         shape = RoundedCornerShape(18.dp),
-        color = Color.LightGray,
-        border = BorderStroke(1.dp, color = Color.LightGray)
+        color = if (isSystemInDarkTheme()) Color(0xFF36343B) else Color(0xFFE3DCE8),
+        border = if(isSystemInDarkTheme()) BorderStroke(1.dp, color = Color(0xFF36343B)) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -356,15 +356,18 @@ fun GameBoardLandscape() {
                     modifier = Modifier
                         .aspectRatio(1f)
                         .padding(5.dp)
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp))
                         .border(
                             1.dp,
-                            Color.DarkGray.copy(alpha = 0.5f),
+                            MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(30.dp)
                         ), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "X",
                         fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
