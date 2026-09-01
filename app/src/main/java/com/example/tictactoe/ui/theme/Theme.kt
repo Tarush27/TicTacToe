@@ -13,22 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple40,
-    onPrimary = Color.Black,
-    secondary = Color.Gray,
-    onSecondary = Color.White,
-    background = Color.Black,
-    onBackground = Color.White,
     surface = Color.Black,
     onSurface = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
-    onPrimary = Color.White,
-    secondary = Color.Gray,
-    onSecondary = Color.Black,
-    background = Color.White,
-    onBackground = Color.Black,
     surface = Color.White,
     onSurface = Color.Black
 )
@@ -36,7 +26,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun TicTacToeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
