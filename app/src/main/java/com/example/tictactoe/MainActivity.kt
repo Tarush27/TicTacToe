@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -171,8 +172,8 @@ fun GameBoard() {
     Surface(
         Modifier.padding(start = 35.dp, end = 35.dp, top = 40.dp),
         shape = RoundedCornerShape(18.dp),
-        color = Color.LightGray,
-        border = BorderStroke(1.dp, color = Color.LightGray)
+        color = if (isSystemInDarkTheme()) Color(0xFF36343B) else Color(0xFFE3DCE8),
+        border = if(isSystemInDarkTheme()) BorderStroke(1.dp, color = Color(0xFF36343B)) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -185,15 +186,18 @@ fun GameBoard() {
                     modifier = Modifier
                         .aspectRatio(1f)
                         .padding(5.dp)
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp))
                         .border(
                             1.dp,
-                            Color.DarkGray.copy(alpha = 0.5f),
+                            MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(30.dp)
                         ), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "X",
                         fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
