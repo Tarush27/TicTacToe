@@ -220,13 +220,14 @@ fun PlayerType() {
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .background(Color(0xFF3A86FF)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     contentDescription = "Player X",
-                    tint = Color(0xFF3A86FF),
+                    tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -234,14 +235,13 @@ fun PlayerType() {
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF3A86FF)),
+                    .clip(CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Circle,
                     contentDescription = "Player O",
-                    tint = Color.White,
+                    tint = Color(0xFF3A86FF),
                     modifier = Modifier.size(28.dp)
                 )
             }
