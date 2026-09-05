@@ -376,3 +376,7 @@ fun GameBoardLandscape() {
     }
 
 }
+
+enum class Player{
+    X,O
+}
