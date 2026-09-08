@@ -88,6 +88,9 @@ fun TicTacToeApp() {
         )
     }
     val context = LocalContext.current
+    var xWins by remember { mutableStateOf(0) }
+    var oWins by remember { mutableStateOf(0) }
+    var draws by remember { mutableStateOf(0) }
 
 
     fun getDiagonals(): Player? {
@@ -155,6 +158,7 @@ fun TicTacToeApp() {
 
         val winner = checkWinner()
         if (winner != null) {
+            if(winner == Player.X) xWins++ else oWins++
             println(board.toString())
             println("Winner is: $winner")
             Toast.makeText(context,"$winner wins",Toast.LENGTH_LONG).show()
@@ -162,6 +166,7 @@ fun TicTacToeApp() {
         }
 
         if (board.all { it != null }) {
+            draws++
             println("its a Draw")
             Toast.makeText(context,"Its a Draw",Toast.LENGTH_LONG).show()
             return
@@ -194,7 +199,7 @@ fun TicTacToeApp() {
         Column(
             Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GameStats()
+            GameStats(xWins, oWins,draws)
             GameBoard(board = board, onCellClick = { position ->
                 makeMove(position)
             })
@@ -215,7 +220,7 @@ fun TicTacToePreview() {
 }
 
 @Composable
-fun GameStats() {
+fun GameStats(xWins: Int, oWins: Int, drawCount: Int) {
     Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface) {
         Row(Modifier.padding(top = 25.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -227,7 +232,7 @@ fun GameStats() {
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
-                    text = "4 wins",
+                    text = if(oWins > 0) "$oWins wins" else "$oWins win",
                     color = Color(0xFF40BAD0),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
@@ -243,7 +248,7 @@ fun GameStats() {
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
-                    text = "4 wins",
+                    text = if(xWins > 0) "$xWins wins" else "$xWins win",
                     color = Color(0xFF3E88CE),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
@@ -259,7 +264,7 @@ fun GameStats() {
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
-                    text = "4 draws",
+                    text = "$drawCount draw",
                     color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,

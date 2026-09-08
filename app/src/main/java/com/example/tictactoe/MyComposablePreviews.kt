@@ -16,11 +16,11 @@ fun GameStatsRailPreview() {
     GameStatsRail()
 }
 
-@Composable
-@Preview
-fun GameStatsPreview() {
-    GameStats()
-}
+//@Composable
+//@Preview
+//fun GameStatsPreview() {
+//    GameStats()
+//}
 
 //@Composable
 //@Preview(showBackground = true)
