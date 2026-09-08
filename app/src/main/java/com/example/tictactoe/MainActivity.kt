@@ -40,7 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,17 +81,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
-    var currentPlayer by remember { mutableStateOf(Player.X) }
-    val board = remember {
+    var currentPlayer by rememberSaveable { mutableStateOf(Player.X) }
+    val board = rememberSaveable {
         mutableStateListOf<Player?>(
             null, null, null, null, null, null, null, null, null
         )
     }
     val context = LocalContext.current
-    var xWins by remember { mutableStateOf(0) }
-    var oWins by remember { mutableStateOf(0) }
-    var draws by remember { mutableStateOf(0) }
-    var isGameOver by remember { mutableStateOf(false) }
+    var xWins by rememberSaveable { mutableStateOf(0) }
+    var oWins by rememberSaveable { mutableStateOf(0) }
+    var draws by rememberSaveable { mutableStateOf(0) }
+    var isGameOver by rememberSaveable { mutableStateOf(false) }
 
     fun getDiagonals(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
