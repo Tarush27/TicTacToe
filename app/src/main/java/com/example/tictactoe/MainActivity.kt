@@ -155,16 +155,16 @@ fun TicTacToeApp() {
             return
         }
 
-        if(isGameOver) return
+        if (isGameOver) return
         board[position] = currentPlayer
 
         val winner = checkWinner()
         if (winner != null) {
-            if(winner == Player.X) xWins++ else oWins++
+            if (winner == Player.X) xWins++ else oWins++
             println(board.toString())
             println("Winner is: $winner")
             isGameOver = true
-            Toast.makeText(context,"Game over $winner wins",Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Game over $winner wins", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -172,7 +172,7 @@ fun TicTacToeApp() {
             draws++
             isGameOver = true
             println("its a Draw")
-            Toast.makeText(context,"Game Over, Its a Draw",Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Game Over, Its a Draw", Toast.LENGTH_LONG).show()
             return
         }
         currentPlayer = when (currentPlayer) {
@@ -203,13 +203,22 @@ fun TicTacToeApp() {
         Column(
             Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GameStats(xWins, oWins,draws)
+            GameStats(xWins, oWins, draws)
             GameBoard(board = board, onCellClick = { position ->
                 makeMove(position)
             })
             PlayerType(currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
-            ResetGame()
+            ResetGame {
+                xWins = 0
+                oWins = 0
+                draws = 0
+                currentPlayer = Player.X
+                board.forEachIndexed { index, player ->
+                    board[index] = null
+                }
+                isGameOver = false
+            }
         }
     }
 
@@ -236,7 +245,7 @@ fun GameStats(xWins: Int, oWins: Int, drawCount: Int) {
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
-                    text = if(oWins > 0) "$oWins wins" else "$oWins win",
+                    text = if (oWins > 0) "$oWins wins" else "$oWins win",
                     color = Color(0xFF40BAD0),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
@@ -252,7 +261,7 @@ fun GameStats(xWins: Int, oWins: Int, drawCount: Int) {
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
-                    text = if(xWins > 0) "$xWins wins" else "$xWins win",
+                    text = if (xWins > 0) "$xWins wins" else "$xWins win",
                     color = Color(0xFF3E88CE),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
@@ -371,9 +380,11 @@ fun PlayerType(currentPlayer: Player) {
 
 
 @Composable
-fun ResetGame() {
+fun ResetGame(onReset: () -> Unit) {
     Button(
-        {}, Modifier
+        {
+            onReset()
+        }, Modifier
             .fillMaxWidth()
             .padding(start = 25.dp, end = 25.dp)
     ) {

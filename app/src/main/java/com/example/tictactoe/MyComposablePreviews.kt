@@ -28,13 +28,13 @@ fun GameStatsRailPreview() {
 //    PlayerType(Player.X)
 //}
 
-@Composable
-@Preview (showBackground = true)
-fun ResetGamePreview() {
-
-    ResetGame()
-
-}
+//@Composable
+//@Preview (showBackground = true)
+//fun ResetGamePreview() {
+//
+//    ResetGame()
+//
+//}
 
 @Composable
 @Preview (showBackground = true)
