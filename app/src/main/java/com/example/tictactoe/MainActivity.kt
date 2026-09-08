@@ -91,7 +91,7 @@ fun TicTacToeApp() {
     var xWins by remember { mutableStateOf(0) }
     var oWins by remember { mutableStateOf(0) }
     var draws by remember { mutableStateOf(0) }
-
+    var isGameOver by remember { mutableStateOf(false) }
 
     fun getDiagonals(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
@@ -154,6 +154,8 @@ fun TicTacToeApp() {
         if (board[position] != null) {
             return
         }
+
+        if(isGameOver) return
         board[position] = currentPlayer
 
         val winner = checkWinner()
@@ -161,14 +163,16 @@ fun TicTacToeApp() {
             if(winner == Player.X) xWins++ else oWins++
             println(board.toString())
             println("Winner is: $winner")
-            Toast.makeText(context,"$winner wins",Toast.LENGTH_LONG).show()
+            isGameOver = true
+            Toast.makeText(context,"Game over $winner wins",Toast.LENGTH_LONG).show()
             return
         }
 
         if (board.all { it != null }) {
             draws++
+            isGameOver = true
             println("its a Draw")
-            Toast.makeText(context,"Its a Draw",Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Game Over, Its a Draw",Toast.LENGTH_LONG).show()
             return
         }
         currentPlayer = when (currentPlayer) {
