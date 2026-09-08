@@ -25,7 +25,7 @@ fun GameStatsPreview() {
 @Composable
 @Preview(showBackground = true)
 fun PlayerTypePreview() {
-    PlayerType()
+    PlayerType(Player.X)
 }
 
 @Composable

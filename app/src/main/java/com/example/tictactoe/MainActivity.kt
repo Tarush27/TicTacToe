@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +36,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,6 +77,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicTacToeApp() {
 
+    var currentPlayer by remember { mutableStateOf(Player.X) }
+
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -94,7 +101,7 @@ fun TicTacToeApp() {
         ) {
             GameStats()
             GameBoard()
-            PlayerType()
+            PlayerType(currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
             ResetGame()
         }
@@ -151,12 +158,12 @@ fun GameStats() {
                     painterResource(R.drawable.ic_balance),
                     contentDescription = "noughts",
                     Modifier.size(40.dp),
-                    tint = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
+                    tint = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
                 )
                 Spacer(Modifier.padding(top = 5.dp))
                 Text(
                     text = "4 draws",
-                    color = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
+                    color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold
@@ -173,7 +180,10 @@ fun GameBoard() {
         Modifier.padding(start = 35.dp, end = 35.dp, top = 40.dp),
         shape = RoundedCornerShape(18.dp),
         color = if (isSystemInDarkTheme()) Color(0xFF36343B) else Color(0xFFE3DCE8),
-        border = if(isSystemInDarkTheme()) BorderStroke(1.dp, color = Color(0xFF36343B)) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
+        border = if (isSystemInDarkTheme()) BorderStroke(
+            1.dp,
+            color = Color(0xFF36343B)
+        ) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -187,7 +197,10 @@ fun GameBoard() {
                         .aspectRatio(1f)
                         .padding(5.dp)
                         .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp))
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(20.dp)
+                        )
                         .border(
                             1.dp,
                             MaterialTheme.colorScheme.surface,
@@ -208,11 +221,12 @@ fun GameBoard() {
 }
 
 @Composable
-fun PlayerType() {
+fun PlayerType(currentPlayer: Player) {
     Surface(
         shape = RoundedCornerShape(50.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp), border = BorderStroke(width = 0.5.dp,color = MaterialTheme.colorScheme.outlineVariant)
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 35.dp),
+        border = BorderStroke(width = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically
@@ -221,13 +235,13 @@ fun PlayerType() {
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF3A86FF)),
+                    .background(if (currentPlayer == Player.X) Color(0xFF3A86FF) else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     contentDescription = "Player X",
-                    tint = Color.White,
+                    tint = if (currentPlayer == Player.X) Color.White else Color(0xFF3A86FF),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -235,13 +249,14 @@ fun PlayerType() {
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .background(if (currentPlayer == Player.O) Color(0xFF3A86FF) else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Circle,
                     contentDescription = "Player O",
-                    tint = Color(0xFF3A86FF),
+                    tint = if (currentPlayer == Player.O) Color.White else Color(0xFF3A86FF),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -308,18 +323,18 @@ fun GameStatsRail() {
                 painterResource(R.drawable.ic_balance),
                 contentDescription = "noughts",
                 Modifier.size(40.dp),
-                tint = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
+                tint = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
             )
             Spacer(Modifier.padding(top = 5.dp))
             Text(
                 text = "4 draws",
-                color = if(isSystemInDarkTheme())Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
+                color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                 fontSize = 20.sp,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold
             )
 
-            PlayerType()
+            PlayerType(Player.X)
 
             Spacer(Modifier.padding(top = 20.dp))
             ResetGameLandscape()
@@ -343,7 +358,10 @@ fun GameBoardLandscape() {
         Modifier.padding(bottom = 20.dp, top = 15.dp, end = 20.dp),
         shape = RoundedCornerShape(18.dp),
         color = if (isSystemInDarkTheme()) Color(0xFF36343B) else Color(0xFFE3DCE8),
-        border = if(isSystemInDarkTheme()) BorderStroke(1.dp, color = Color(0xFF36343B)) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
+        border = if (isSystemInDarkTheme()) BorderStroke(
+            1.dp,
+            color = Color(0xFF36343B)
+        ) else BorderStroke(1.dp, color = Color(0xFFE3DCE8))
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -357,7 +375,10 @@ fun GameBoardLandscape() {
                         .aspectRatio(1f)
                         .padding(5.dp)
                         .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp))
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(20.dp)
+                        )
                         .border(
                             1.dp,
                             MaterialTheme.colorScheme.surface,
@@ -377,6 +398,6 @@ fun GameBoardLandscape() {
 
 }
 
-enum class Player{
-    X,O
+enum class Player {
+    X, O
 }
