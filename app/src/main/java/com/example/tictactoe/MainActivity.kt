@@ -2,6 +2,7 @@ package com.example.tictactoe
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,6 +87,8 @@ fun TicTacToeApp() {
             null, null, null, null, null, null, null, null, null
         )
     }
+    val context = LocalContext.current
+
 
     fun getDiagonals(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
@@ -153,6 +157,13 @@ fun TicTacToeApp() {
         if (winner != null) {
             println(board.toString())
             println("Winner is: $winner")
+            Toast.makeText(context,"$winner wins",Toast.LENGTH_LONG).show()
+            return
+        }
+
+        if (board.all { it != null }) {
+            println("its a Draw")
+            Toast.makeText(context,"Its a Draw",Toast.LENGTH_LONG).show()
             return
         }
         currentPlayer = when (currentPlayer) {
