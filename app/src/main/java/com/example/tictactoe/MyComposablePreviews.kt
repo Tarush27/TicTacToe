@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 
-@Composable
-@Preview(showBackground = true)
-fun GameBoardPreview() {
-    GameBoard()
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun GameBoardPreview() {
+//    GameBoard()
+//}
 
 @Composable
 @Preview(showBackground = true)
@@ -22,11 +22,11 @@ fun GameStatsPreview() {
     GameStats()
 }
 
-@Composable
-@Preview(showBackground = true)
-fun PlayerTypePreview() {
-    PlayerType(Player.X)
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun PlayerTypePreview() {
+//    PlayerType(Player.X)
+//}
 
 @Composable
 @Preview (showBackground = true)
