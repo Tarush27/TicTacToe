@@ -10,11 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 //    GameBoard()
 //}
 
-@Composable
-@Preview(showBackground = true)
-fun GameStatsRailPreview() {
-    GameStatsRail()
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun GameStatsRailPreview() {
+//    GameStatsRail()
+//}
 
 //@Composable
 //@Preview
@@ -36,19 +36,19 @@ fun GameStatsRailPreview() {
 //
 //}
 
-@Composable
-@Preview (showBackground = true)
-fun ResetGameLandscapePreview() {
+//@Composable
+//@Preview (showBackground = true)
+//fun ResetGameLandscapePreview() {
+//
+//    ResetGameLandscape()
+//
+//}
 
-    ResetGameLandscape()
-
-}
-
-@Composable
-@Preview (showBackground = true)
-fun GameBoardLandscapePreview() {
-
-    GameBoardLandscape()
-
-}
+//@Composable
+//@Preview (showBackground = true)
+//fun GameBoardLandscapePreview() {
+//
+//    GameBoardLandscape()
+//
+//}
 

@@ -194,8 +194,17 @@ fun TicTacToeApp() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            GameStatsRail()
-            GameBoardLandscape()
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                GameStatsRail(xWins, oWins, draws, currentPlayer)
+                ResetGameLandscape {
+                    currentPlayer = Player.X
+                    board.forEachIndexed { index, player -> board[index] = null }
+                    isGameOver = false
+                }
+            }
+            GameBoardLandscape(board = board, onCellClick = { position ->
+                makeMove(position)
+            })
         }
 
 
@@ -210,9 +219,6 @@ fun TicTacToeApp() {
             PlayerType(currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
             ResetGame {
-                xWins = 0
-                oWins = 0
-                draws = 0
                 currentPlayer = Player.X
                 board.forEachIndexed { index, player ->
                     board[index] = null
@@ -394,7 +400,7 @@ fun ResetGame(onReset: () -> Unit) {
 
 
 @Composable
-fun GameStatsRail() {
+fun GameStatsRail(xWins: Int, oWins: Int, drawCount: Int, currentPlayer: Player) {
     Surface() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row(
@@ -409,7 +415,7 @@ fun GameStatsRail() {
                         tint = Color(0xFF40BAD0)
                     )
                     Text(
-                        text = "4 wins",
+                        text = if (oWins > 0) "$oWins wins" else "$oWins win",
                         color = Color(0xFF40BAD0),
                         fontSize = 20.sp,
                         style = MaterialTheme.typography.bodySmall,
@@ -425,7 +431,7 @@ fun GameStatsRail() {
                         tint = Color(0xFF3E88CE)
                     )
                     Text(
-                        text = "4 wins",
+                        text = if (xWins > 0) "$xWins wins" else "$xWins win",
                         color = Color(0xFF3E88CE),
                         fontSize = 20.sp,
                         style = MaterialTheme.typography.bodySmall,
@@ -437,39 +443,41 @@ fun GameStatsRail() {
             Spacer(Modifier.padding(top = 15.dp))
             Icon(
                 painterResource(R.drawable.ic_balance),
-                contentDescription = "noughts",
+                contentDescription = "balance",
                 Modifier.size(40.dp),
                 tint = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f)
             )
             Spacer(Modifier.padding(top = 5.dp))
             Text(
-                text = "4 draws",
+                text = "$drawCount draw",
                 color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray.copy(alpha = 0.5f),
                 fontSize = 20.sp,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold
             )
 
-            PlayerType(Player.X)
+            PlayerType(currentPlayer)
 
             Spacer(Modifier.padding(top = 20.dp))
-            ResetGameLandscape()
+//            ResetGameLandscape()
         }
     }
 }
 
 
 @Composable
-fun ResetGameLandscape() {
+fun ResetGameLandscape(onReset: () -> Unit) {
     Button(
-        {}, Modifier.width(300.dp)
+        {
+            onReset()
+        }, Modifier.width(300.dp)
     ) {
         Text(text = "Reset", fontSize = 20.sp)
     }
 }
 
 @Composable
-fun GameBoardLandscape() {
+fun GameBoardLandscape(board: List<Player?>, onCellClick: (Int) -> Unit) {
     Surface(
         Modifier.padding(bottom = 20.dp, top = 15.dp, end = 20.dp),
         shape = RoundedCornerShape(18.dp),
@@ -484,7 +492,7 @@ fun GameBoardLandscape() {
             contentPadding = PaddingValues(20.dp),
             userScrollEnabled = false
         ) {
-            items(9) { item ->
+            items(9) { pos ->
                 Box(
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -497,10 +505,13 @@ fun GameBoardLandscape() {
                             1.dp,
                             MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(30.dp)
-                        ), contentAlignment = Alignment.Center
+                        )
+                        .clickable { onCellClick(pos) }, contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "X", fontSize = 30.sp, color = MaterialTheme.colorScheme.onSurface
+                        text = board[pos]?.name ?: "",
+                        fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
