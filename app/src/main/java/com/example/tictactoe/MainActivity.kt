@@ -93,7 +93,7 @@ fun TicTacToeApp() {
     var draws by rememberSaveable { mutableStateOf(0) }
     var isGameOver by rememberSaveable { mutableStateOf(false) }
 
-    fun getDiagonals(): Player? {
+    fun getWinningDiagonalPlayer(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
             return board[0]
         }
@@ -104,7 +104,7 @@ fun TicTacToeApp() {
         return null
     }
 
-    fun getColumns(): Player? {
+    fun getWinningColumnPlayer(): Player? {
         if (board[0] != null && board[0] == board[3] && board[3] == board[6]) {
             return board[0]
         }
@@ -118,7 +118,7 @@ fun TicTacToeApp() {
         return null
     }
 
-    fun getRows(): Player? {
+    fun getWinningRowPlayer(): Player? {
         if (board[0] != null && board[0] == board[1] && board[1] == board[2]) {
             return board[0]
         }
@@ -133,16 +133,16 @@ fun TicTacToeApp() {
     }
 
     fun checkWinner(): Player? {
-        val rowWinner = getRows()
+        val rowWinner = getWinningRowPlayer()
         if (rowWinner != null) {
             return rowWinner
         }
-        val columnWinner = getColumns()
+        val columnWinner = getWinningColumnPlayer()
         if (columnWinner != null) {
             return columnWinner
         }
 
-        val diagonalWinner = getDiagonals()
+        val diagonalWinner = getWinningDiagonalPlayer()
         if (diagonalWinner != null) {
             return diagonalWinner
         }
