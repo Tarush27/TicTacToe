@@ -196,7 +196,7 @@ fun TicTacToeApp() {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 GameStatsRail(xWins, oWins, draws, currentPlayer)
-                ResetGameLandscape {
+                RestartGameLandscape {
                     currentPlayer = Player.X
                     board.forEachIndexed { index, player -> board[index] = null }
                     isGameOver = false
@@ -218,7 +218,7 @@ fun TicTacToeApp() {
             })
             PlayerType(currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
-            ResetGame {
+            RestartGame {
                 currentPlayer = Player.X
                 board.forEachIndexed { index, player ->
                     board[index] = null
@@ -386,7 +386,7 @@ fun PlayerType(currentPlayer: Player) {
 
 
 @Composable
-fun ResetGame(onReset: () -> Unit) {
+fun RestartGame(onReset: () -> Unit) {
     Button(
         {
             onReset()
@@ -394,7 +394,7 @@ fun ResetGame(onReset: () -> Unit) {
             .fillMaxWidth()
             .padding(start = 25.dp, end = 25.dp)
     ) {
-        Text(text = "Reset", Modifier.padding(5.dp), fontSize = 20.sp)
+        Text(text = "Restart", Modifier.padding(5.dp), fontSize = 20.sp)
     }
 }
 
@@ -459,20 +459,19 @@ fun GameStatsRail(xWins: Int, oWins: Int, drawCount: Int, currentPlayer: Player)
             PlayerType(currentPlayer)
 
             Spacer(Modifier.padding(top = 20.dp))
-//            ResetGameLandscape()
         }
     }
 }
 
 
 @Composable
-fun ResetGameLandscape(onReset: () -> Unit) {
+fun RestartGameLandscape(onReset: () -> Unit) {
     Button(
         {
             onReset()
         }, Modifier.width(300.dp)
     ) {
-        Text(text = "Reset", fontSize = 20.sp)
+        Text(text = "Restart", fontSize = 20.sp)
     }
 }
 
