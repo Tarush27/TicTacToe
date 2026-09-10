@@ -29,8 +29,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
@@ -46,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,6 +61,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tictactoe.ui.theme.AppTheme
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 
 class MainActivity : ComponentActivity() {
@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TicTacToeTheme {
+            var selectedTheme by rememberSaveable { mutableStateOf(AppTheme.DEFAULT) }
+            TicTacToeTheme(appTheme = selectedTheme) {
                 Scaffold(
                     topBar = {
                         TopAppBar(title = {
@@ -78,9 +79,8 @@ class MainActivity : ComponentActivity() {
                                 "TicTacToe"
                             )
                         }, actions = {
-                            MinimalDropdownMenu()
-                        }
-                        )
+                            MinimalDropdownMenu(onThemeSelected = { selectedTheme = it })
+                        })
                     }
 
 
@@ -101,23 +101,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MinimalDropdownMenu() {
+fun MinimalDropdownMenu(onThemeSelected: (AppTheme) -> Unit) {
     var expanded by rememberSaveable() { mutableStateOf(false) }
     Box(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier = Modifier.padding(16.dp)
     ) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                text = { Text("Colors") },
-                onClick = { }
-            )
+            expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(text = { Text("Default Theme") }, onClick = {
+                onThemeSelected(AppTheme.DEFAULT)
+                expanded = false
+            })
+            DropdownMenuItem(text = { Text("Red Theme") }, onClick = {
+                onThemeSelected(AppTheme.RED)
+                expanded = false
+            })
+            DropdownMenuItem(text = { Text("Yellow Theme") }, onClick = {
+                onThemeSelected(AppTheme.YELLOW)
+                expanded = false
+            })
         }
     }
 }
@@ -132,9 +137,9 @@ fun TicTacToeApp() {
         )
     }
     val context = LocalContext.current
-    var xWins by rememberSaveable { mutableStateOf(0) }
-    var oWins by rememberSaveable { mutableStateOf(0) }
-    var draws by rememberSaveable { mutableStateOf(0) }
+    var xWins by rememberSaveable { mutableIntStateOf(0) }
+    var oWins by rememberSaveable { mutableIntStateOf(0) }
+    var draws by rememberSaveable { mutableIntStateOf(0) }
     var isGameOver by rememberSaveable { mutableStateOf(false) }
 
     fun getWinningDiagonalPlayer(): Player? {
@@ -234,7 +239,7 @@ fun TicTacToeApp() {
     if (isLandscape) {
 
         Row(
-            Modifier.padding(end = 10.dp, top = 20.dp, bottom = 10.dp),
+            Modifier.padding(end = 10.dp, bottom = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -242,7 +247,7 @@ fun TicTacToeApp() {
                 GameStatsRail(xWins, oWins, draws, currentPlayer)
                 RestartGameLandscape {
                     currentPlayer = Player.X
-                    board.forEachIndexed { index, player -> board[index] = null }
+                    board.forEachIndexed { index, _ -> board[index] = null }
                     isGameOver = false
                 }
             }
@@ -264,7 +269,7 @@ fun TicTacToeApp() {
             Spacer(Modifier.padding(top = 40.dp))
             RestartGame {
                 currentPlayer = Player.X
-                board.forEachIndexed { index, player ->
+                board.forEachIndexed { index, _ ->
                     board[index] = null
                 }
                 isGameOver = false
