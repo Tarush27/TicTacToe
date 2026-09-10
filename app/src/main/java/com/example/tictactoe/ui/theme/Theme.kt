@@ -63,13 +63,11 @@ fun TicTacToeTheme(
 
     val useDarkIcons = colorScheme.background.luminance() > 0.5f
 
-    if (!view.isInEditMode) {
 
-            val window = (view.context as Activity).window
-            val insetsController = WindowCompat.getInsetsController(window, view)
-            insetsController.isAppearanceLightStatusBars = useDarkIcons
+    val window = (view.context as Activity).window
+    val insetsController = WindowCompat.getInsetsController(window, view)
+    insetsController.isAppearanceLightStatusBars = useDarkIcons
 
-    }
 
     MaterialTheme(
         colorScheme = colorScheme, typography = Typography, content = content
