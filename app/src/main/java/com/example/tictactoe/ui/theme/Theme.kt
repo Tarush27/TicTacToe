@@ -1,5 +1,6 @@
 package com.example.tictactoe.ui.theme
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -8,8 +9,13 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 enum class AppTheme {
     DEFAULT, RED, YELLOW
@@ -38,6 +44,7 @@ fun TicTacToeTheme(
     appTheme: AppTheme = AppTheme.DEFAULT,
     content: @Composable () -> Unit
 ) {
+    val view = LocalView.current
     val colorScheme = when (appTheme) {
         AppTheme.RED -> RedColorScheme
         AppTheme.YELLOW -> YellowColorScheme
@@ -54,6 +61,16 @@ fun TicTacToeTheme(
                 else -> LightColorScheme
             }
         }
+    }
+
+    val useDarkIcons = colorScheme.background.luminance() > 0.5f
+
+    if (!view.isInEditMode) {
+
+            val window = (view.context as Activity).window
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            insetsController.isAppearanceLightStatusBars = useDarkIcons
+
     }
 
     MaterialTheme(
