@@ -63,6 +63,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tictactoe.ui.theme.AppTheme
 import com.example.tictactoe.ui.theme.TicTacToeTheme
+import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -130,6 +133,7 @@ fun MinimalDropdownMenu(onThemeSelected: (AppTheme) -> Unit) {
 @Composable
 fun TicTacToeApp() {
 
+    val databaseReference: DatabaseReference = Firebase.database.reference
     var currentPlayer by rememberSaveable { mutableStateOf(Player.X) }
     val board = rememberSaveable {
         mutableStateListOf<Player?>(
@@ -141,6 +145,14 @@ fun TicTacToeApp() {
     var oWins by rememberSaveable { mutableIntStateOf(0) }
     var draws by rememberSaveable { mutableIntStateOf(0) }
     var isGameOver by rememberSaveable { mutableStateOf(false) }
+
+    val gameStat = GameStat()
+    val gameState = GameState(
+        board.map { it?.name ?: "" },
+        currentPlayer = currentPlayer.name,
+        isGameOver,
+        gameStat
+    )
 
     fun getWinningDiagonalPlayer(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
@@ -572,3 +584,12 @@ fun GameBoardLandscape(board: List<Player?>, onCellClick: (Int) -> Unit) {
 enum class Player {
     X, O
 }
+
+data class GameState(
+    val board: List<String> = List(9) { "" },
+    val currentPlayer: String = "X",
+    val isGameOver: Boolean = false,
+    val stats: GameStat = GameStat()
+)
+
+data class GameStat(val xWins: Int = 0, val oWins: Int = 0, val draw: Int = 0)
