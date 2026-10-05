@@ -44,7 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,8 +64,10 @@ import androidx.compose.ui.unit.sp
 import com.example.tictactoe.ui.theme.AppTheme
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
+import com.google.firebase.database.PropertyName
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -141,18 +143,23 @@ fun TicTacToeApp() {
         )
     }
     val context = LocalContext.current
-    var xWins by rememberSaveable { mutableIntStateOf(0) }
-    var oWins by rememberSaveable { mutableIntStateOf(0) }
-    var draws by rememberSaveable { mutableIntStateOf(0) }
+    var xWins by rememberSaveable { mutableLongStateOf(0L) }
+    var oWins by rememberSaveable { mutableLongStateOf(0L) }
+    var draws by rememberSaveable { mutableLongStateOf(0L) }
     var isGameOver by rememberSaveable { mutableStateOf(false) }
 
-    val gameStat = GameStat()
+    val gameStat = GameStat(xWins, oWins, draws)
     val gameState = GameState(
         board.map { it?.name ?: "" },
         currentPlayer = currentPlayer.name,
         isGameOver,
         gameStat
     )
+
+    databaseReference.child("games").child("123")
+        .setValue(
+            gameState
+        ) { error, _ -> if (error == null) println("Success") else println("db ref error : $error") }
 
     fun getWinningDiagonalPlayer(): Player? {
         if (board[0] != null && board[0] == board[4] && board[4] == board[8]) {
@@ -300,7 +307,7 @@ fun TicTacToePreview() {
 }
 
 @Composable
-fun GameStats(xWins: Int, oWins: Int, drawCount: Int) {
+fun GameStats(xWins: Long, oWins: Long, drawCount: Long) {
     Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface) {
         Row(Modifier.padding(top = 25.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -461,7 +468,7 @@ fun RestartGame(onReset: () -> Unit) {
 
 
 @Composable
-fun GameStatsRail(xWins: Int, oWins: Int, drawCount: Int, currentPlayer: Player) {
+fun GameStatsRail(xWins: Long, oWins: Long, drawCount: Long, currentPlayer: Player) {
     Surface() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row(
@@ -592,4 +599,8 @@ data class GameState(
     val stats: GameStat = GameStat()
 )
 
-data class GameStat(val xWins: Int = 0, val oWins: Int = 0, val draw: Int = 0)
+data class GameStat(
+    @get:PropertyName("x_wins") val x_wins: Long = 0L,
+    @get:PropertyName("o_wins") val o_wins: Long = 0L,
+    @get:PropertyName("draws") val draws: Long = 0L
+)
