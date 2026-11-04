@@ -785,6 +785,14 @@ class TicTacToeMachine {
     fun dispatch(event: CellClicked) {
         state = makeMove(state, event.position)
     }
+
+    fun reset() {
+        state = state.copy(
+            ticTacToeData = TicTacToeData(),
+            gamePhase = GamePhase.PLAYING,
+            winner = null
+        )
+    }
 }
 
 data class TicTacToeUiState(
