@@ -217,54 +217,6 @@ fun makeMove(state: TicTacToeUiState, position: Int): TicTacToeUiState {
         currentPlayer = nextPlayer(state.ticTacToeData.currentPlayer)
     )
 
-//        if (ticTacToeUiState.board[position] != null || ticTacToeUiState.isGameOver()) return
-//
-//        val newBoard = ticTacToeUiState.board.toMutableList().apply {
-//            this[position] = ticTacToeUiState.currentPlayer
-//        }
-//        val winner = checkWinner(newBoard)
-//        if (winner != null) {
-//            val updatedGameStats = if (winner == Player.X) {
-//                ticTacToeUiState.gameStat.copy(
-//                    x_wins = ticTacToeUiState.gameStat.x_wins + 1,
-//                )
-//            } else {
-//                ticTacToeUiState.gameStat.copy(
-//                    o_wins = ticTacToeUiState.gameStat.o_wins + 1,
-//                )
-//            }
-//
-//            ticTacToeUiState = ticTacToeUiState.copy(
-//                board = newBoard, gameStat = updatedGameStats
-//            )
-//            println(newBoard.toString())
-//            println("Winner is: $winner")
-//            Toast.makeText(context, "Game over $winner wins", Toast.LENGTH_LONG).show()
-//            updateGameStateToFirebase()
-//            return
-//        }
-//
-//        if (newBoard.all { it != null }) {
-//
-//            val updatedGameStats = ticTacToeUiState.gameStat.copy(
-//                draws = ticTacToeUiState.gameStat.draws + 1,
-//            )
-//
-//            ticTacToeUiState = ticTacToeUiState.copy(
-//                board = newBoard, gameStat = updatedGameStats
-//            )
-//            println("its a Draw")
-//            Toast.makeText(context, "Game Over, Its a Draw", Toast.LENGTH_LONG).show()
-//            updateGameStateToFirebase()
-//            return
-//        }
-//
-//        val latestPlayer = if (ticTacToeUiState.currentPlayer == Player.X) Player.O else Player.X
-//
-//        ticTacToeUiState = ticTacToeUiState.copy(
-//            board = newBoard, currentPlayer = latestPlayer
-//        )
-//
 //        updateGameStateToFirebase()
     return state.copy(ticTacToeData = updatedGameData)
 
@@ -344,72 +296,6 @@ fun TicTacToeApp() {
 //    }
 
 
-//    fun makeMove(state: TicTacToeUiState, position: Int): TicTacToeUiState {
-//
-//        if (state.ticTacToeData.board[position] != null) {
-//            return state
-//        }
-//
-//        val newBoard = state.ticTacToeData.board.toMutableList()
-//        newBoard[position] = state.ticTacToeData.currentPlayer
-//
-//        val updatedGameData = state.ticTacToeData.copy(
-//            board = newBoard.toList(),
-//            currentPlayer = nextPlayer(state.ticTacToeData.currentPlayer)
-//        )
-//
-////        if (ticTacToeUiState.board[position] != null || ticTacToeUiState.isGameOver()) return
-////
-////        val newBoard = ticTacToeUiState.board.toMutableList().apply {
-////            this[position] = ticTacToeUiState.currentPlayer
-////        }
-////        val winner = checkWinner(newBoard)
-////        if (winner != null) {
-////            val updatedGameStats = if (winner == Player.X) {
-////                ticTacToeUiState.gameStat.copy(
-////                    x_wins = ticTacToeUiState.gameStat.x_wins + 1,
-////                )
-////            } else {
-////                ticTacToeUiState.gameStat.copy(
-////                    o_wins = ticTacToeUiState.gameStat.o_wins + 1,
-////                )
-////            }
-////
-////            ticTacToeUiState = ticTacToeUiState.copy(
-////                board = newBoard, gameStat = updatedGameStats
-////            )
-////            println(newBoard.toString())
-////            println("Winner is: $winner")
-////            Toast.makeText(context, "Game over $winner wins", Toast.LENGTH_LONG).show()
-////            updateGameStateToFirebase()
-////            return
-////        }
-////
-////        if (newBoard.all { it != null }) {
-////
-////            val updatedGameStats = ticTacToeUiState.gameStat.copy(
-////                draws = ticTacToeUiState.gameStat.draws + 1,
-////            )
-////
-////            ticTacToeUiState = ticTacToeUiState.copy(
-////                board = newBoard, gameStat = updatedGameStats
-////            )
-////            println("its a Draw")
-////            Toast.makeText(context, "Game Over, Its a Draw", Toast.LENGTH_LONG).show()
-////            updateGameStateToFirebase()
-////            return
-////        }
-////
-////        val latestPlayer = if (ticTacToeUiState.currentPlayer == Player.X) Player.O else Player.X
-////
-////        ticTacToeUiState = ticTacToeUiState.copy(
-////            board = newBoard, currentPlayer = latestPlayer
-////        )
-////
-////        updateGameStateToFirebase()
-//        return state.copy(ticTacToeData = updatedGameData)
-//
-//    }
 
 
     val configuration = LocalConfiguration.current
@@ -801,7 +687,6 @@ data class TicTacToeUiState(
     val gamePhase: GamePhase = GamePhase.PLAYING,
     val winner: Player? = null
 ) {
-//    fun isGameOver(): Boolean = checkWinner(board) != null || board.all { it != null }
 //
 //    companion object {
 //        val Saver: Saver<TicTacToeUiState, *> = listSaver(save = { state ->
