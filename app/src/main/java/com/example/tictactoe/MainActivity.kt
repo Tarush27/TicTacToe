@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -345,6 +346,22 @@ fun TicTacToeApp() {
 //                updateGameStateToFirebase()
                 machine.reset()
             }
+        }
+    }
+
+    LaunchedEffect(ticTacToeUiState.gamePhase) {
+        when (ticTacToeUiState.gamePhase) {
+            GamePhase.WON -> {
+                Toast.makeText(context, "${ticTacToeUiState.winner} wins", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            GamePhase.DRAW -> {
+                Toast.makeText(context, " It's a draw", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            GamePhase.PLAYING -> Unit
         }
     }
 
