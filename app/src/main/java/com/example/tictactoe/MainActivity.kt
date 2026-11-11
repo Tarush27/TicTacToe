@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,6 +74,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.PropertyName
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -228,15 +232,11 @@ fun TicTacToeApp() {
     val databaseReference: DatabaseReference = Firebase.database.reference
     val context = LocalContext.current
 
-    var ticTacToeUiState by remember(/*stateSaver = TicTacToeUiState.Saver*/) {
-        mutableStateOf(TicTacToeUiState())
-    }
 
-    val machine = TicTacToeMachine()
-    val cellClicked = CellClicked(4)
-    machine.dispatch(cellClicked)
-    println(machine.state.ticTacToeData.board)
-    println(machine.state.ticTacToeData.currentPlayer)
+    val machine = remember { TicTacToeMachine() }
+
+    val ticTacToeUiState by machine.state.collectAsState()
+
     fun updateGameStateToFirebase() {
 //        val gameStat = GameStat(
 //            x_wins = ticTacToeUiState.gameStat.x_wins,
@@ -296,8 +296,6 @@ fun TicTacToeApp() {
 //    }
 
 
-
-
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -309,16 +307,22 @@ fun TicTacToeApp() {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                GameStatsRail(0, 0, 0, Player.X)
+                GameStatsRail(
+                    ticTacToeUiState.gameStat.x_wins,
+                    ticTacToeUiState.gameStat.o_wins,
+                    ticTacToeUiState.gameStat.draws,
+                    ticTacToeUiState.ticTacToeData.currentPlayer
+                )
                 RestartGameLandscape {
-//                    ticTacToeUiState = TicTacToeUiState(gameStat = ticTacToeUiState.gameStat)
 //                    updateGameStateToFirebase()
+                    machine.reset()
                 }
             }
             GameBoardLandscape(
                 board = ticTacToeUiState.ticTacToeData.board,
                 onCellClick = { position ->
 //                makeMove(position)
+                    machine.dispatch(CellClicked(position))
                 })
         }
 
@@ -327,15 +331,19 @@ fun TicTacToeApp() {
         Column(
             Modifier.padding(bottom = 10.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GameStats(0, 0, 0)
+            GameStats(
+                ticTacToeUiState.gameStat.x_wins,
+                ticTacToeUiState.gameStat.o_wins,
+                ticTacToeUiState.gameStat.draws
+            )
             GameBoard(board = ticTacToeUiState.ticTacToeData.board, onCellClick = { position ->
-//                makeMove(position)
+                machine.dispatch(CellClicked(position))
             })
-            PlayerType(currentPlayer = Player.X)
+            PlayerType(currentPlayer = ticTacToeUiState.ticTacToeData.currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
             RestartGame {
-//                ticTacToeUiState = TicTacToeUiState(gameStat = ticTacToeUiState.gameStat)
 //                updateGameStateToFirebase()
+                machine.reset()
             }
         }
     }
@@ -663,17 +671,17 @@ data class TicTacToeData(
 )
 
 class TicTacToeMachine {
-    var state = TicTacToeUiState()
-        private set
+    private val _state = MutableStateFlow(TicTacToeUiState())
+    val state: StateFlow<TicTacToeUiState> = _state.asStateFlow()
 
 
     // in state machine, dispatch is the terminology used to pass event.
     fun dispatch(event: CellClicked) {
-        state = makeMove(state, event.position)
+        _state.value = makeMove(_state.value, event.position)
     }
 
     fun reset() {
-        state = state.copy(
+        _state.value = _state.value.copy(
             ticTacToeData = TicTacToeData(),
             gamePhase = GamePhase.PLAYING,
             winner = null
