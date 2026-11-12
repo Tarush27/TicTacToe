@@ -2,7 +2,6 @@ package com.example.tictactoe
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,12 +43,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -69,11 +66,8 @@ import androidx.compose.ui.unit.sp
 import com.example.tictactoe.ui.theme.AppTheme
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 import com.google.firebase.Firebase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.PropertyName
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -218,8 +212,7 @@ fun makeMove(state: TicTacToeUiState, position: Int): TicTacToeUiState {
     }
 
     val updatedGameData = state.ticTacToeData.copy(
-        board = newBoard.toList(),
-        currentPlayer = nextPlayer(state.ticTacToeData.currentPlayer)
+        board = newBoard.toList(), currentPlayer = nextPlayer(state.ticTacToeData.currentPlayer)
     )
 
 //        updateGameStateToFirebase()
@@ -234,7 +227,7 @@ fun TicTacToeApp() {
     val context = LocalContext.current
 
 
-    val machine = remember { TicTacToeMachine() }
+    val machine = rememberSaveable(saver = TicTacToeMachine.Saver) { TicTacToeMachine() }
 
     val ticTacToeUiState by machine.state.collectAsState()
 
@@ -320,9 +313,7 @@ fun TicTacToeApp() {
                 }
             }
             GameBoardLandscape(
-                board = ticTacToeUiState.ticTacToeData.board,
-                onCellClick = { position ->
-//                makeMove(position)
+                board = ticTacToeUiState.ticTacToeData.board, onCellClick = { position ->
                     machine.dispatch(CellClicked(position))
                 })
         }
@@ -357,8 +348,7 @@ fun TicTacToeApp() {
             }
 
             GamePhase.DRAW -> {
-                Toast.makeText(context, " It's a draw", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, " It's a draw", Toast.LENGTH_SHORT).show()
             }
 
             GamePhase.PLAYING -> Unit
@@ -687,22 +677,52 @@ data class TicTacToeData(
     val currentPlayer: Player = Player.X,
 )
 
-class TicTacToeMachine {
-    private val _state = MutableStateFlow(TicTacToeUiState())
+class TicTacToeMachine(initialState: TicTacToeUiState = TicTacToeUiState()) {
+    private val _state = MutableStateFlow(initialState)
     val state: StateFlow<TicTacToeUiState> = _state.asStateFlow()
 
 
-    // in state machine, dispatch is the terminology used to pass event.
     fun dispatch(event: CellClicked) {
         _state.value = makeMove(_state.value, event.position)
     }
 
     fun reset() {
         _state.value = _state.value.copy(
-            ticTacToeData = TicTacToeData(),
-            gamePhase = GamePhase.PLAYING,
-            winner = null
+            ticTacToeData = TicTacToeData(), gamePhase = GamePhase.PLAYING, winner = null
         )
+    }
+
+    companion object {
+        val Saver: Saver<TicTacToeMachine, *> = listSaver(save = { machine ->
+            val uiState = machine.state.value
+            listOf(
+                uiState.ticTacToeData.board.map { it?.name },
+                uiState.ticTacToeData.currentPlayer.name,
+                uiState.gameStat.x_wins,
+                uiState.gameStat.o_wins,
+                uiState.gameStat.draws,
+                uiState.gamePhase.name,
+                uiState.winner?.name
+            )
+        }, restore = { list ->
+            @Suppress("UNCHECKED_CAST") val boardList = (list[0] as List<String?>).map { name ->
+                name?.let { Player.valueOf(it) }
+            }
+            val currentPlayer = Player.valueOf(list[1] as String)
+            val xWins = list[2] as Long
+            val oWins = list[3] as Long
+            val draws = list[4] as Long
+            val gamePhase = GamePhase.valueOf(list[5] as String)
+            val winner = (list[6] as? String)?.let { Player.valueOf(it) }
+
+            val restoredUiState = TicTacToeUiState(
+                ticTacToeData = TicTacToeData(board = boardList, currentPlayer = currentPlayer),
+                gameStat = GameStat(x_wins = xWins, o_wins = oWins, draws = draws),
+                gamePhase = gamePhase,
+                winner = winner
+            )
+            TicTacToeMachine(initialState = restoredUiState)
+        })
     }
 }
 
@@ -711,30 +731,4 @@ data class TicTacToeUiState(
     val gameStat: GameStat = GameStat(),
     val gamePhase: GamePhase = GamePhase.PLAYING,
     val winner: Player? = null
-) {
-//
-//    companion object {
-//        val Saver: Saver<TicTacToeUiState, *> = listSaver(save = { state ->
-//            listOf(
-//                state.board.map { it?.name },
-//                state.currentPlayer.name,
-//                state.gameStat.x_wins,
-//                state.gameStat.o_wins,
-//                state.gameStat.draws
-//            )
-//        }, restore = { list ->
-//            @Suppress("UNCHECKED_CAST") val boardList = (list[0] as List<String?>).map { name ->
-//                name?.let { Player.valueOf(it) }
-//            }
-//            val currentPlayer = Player.valueOf(list[1] as String)
-//            val xWins = list[2] as Long
-//            val oWins = list[3] as Long
-//            val draws = list[4] as Long
-//            TicTacToeUiState(
-//                board = boardList,
-//                currentPlayer = currentPlayer,
-//                gameStat = GameStat(x_wins = xWins, o_wins = oWins, draws = draws)
-//            )
-//        })
-//    }
-}
+)
