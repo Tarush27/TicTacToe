@@ -2,6 +2,7 @@ package com.example.tictactoe
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +44,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -66,8 +68,11 @@ import androidx.compose.ui.unit.sp
 import com.example.tictactoe.ui.theme.AppTheme
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.PropertyName
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -231,63 +236,74 @@ fun TicTacToeApp() {
 
     val ticTacToeUiState by machine.state.collectAsState()
 
-    fun updateGameStateToFirebase() {
-//        val gameStat = GameStat(
-//            x_wins = ticTacToeUiState.gameStat.x_wins,
-//            o_wins = ticTacToeUiState.gameStat.o_wins,
-//            draws = ticTacToeUiState.gameStat.draws
-//        )
-//        val gameState = GameState(
-//            board = ticTacToeUiState.board.map { it?.name ?: "" },
-//            currentPlayer = ticTacToeUiState.currentPlayer.name,
-//            stats = gameStat
-//        )
-//
-//        databaseReference.child("games").child("123").setValue(
-//            gameState
-//        ) { error, _ -> if (error == null) println("Success") else println("db ref error : $error") }
+    fun updateGameStateToFirebase(uiState: TicTacToeUiState) {
+        val gameStat = GameStat(
+            x_wins = uiState.gameStat.x_wins,
+            o_wins = uiState.gameStat.o_wins,
+            draws = uiState.gameStat.draws
+        )
+        val gameState = GameState(
+            board = uiState.ticTacToeData.board.map { it?.name ?: "" },
+            currentPlayer = uiState.ticTacToeData.currentPlayer.name,
+            stats = gameStat,
+            gamePhase = uiState.gamePhase.name,
+            winner = uiState.winner?.name ?: ""
+        )
+
+        databaseReference.child("games").child("123").setValue(
+            gameState
+        ) { error, _ -> if (error == null) println("Success") else println("db ref error : $error") }
     }
 
-//    DisposableEffect(Unit) {
-//        val listener = object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val remoteGameState = snapshot.getValue(GameState::class.java)
-//
-//                Log.d("MainActivity_frd", "onDataChange:  $remoteGameState")
-//
-//                if (remoteGameState != null) {
-//                    val updatedGameBoard: List<Player?> = remoteGameState.board.map {
-//                        when (it) {
-//                            "X" -> Player.X
-//                            "O" -> Player.O
-//                            else -> null
-//                        }
-//                    }
-//
-//                    val latestPlayer =
-//                        if (remoteGameState.currentPlayer == "O") Player.O else Player.X
-//
-//                    ticTacToeUiState = TicTacToeUiState(
-//                        board = updatedGameBoard,
-//                        currentPlayer = latestPlayer,
-//                        gameStat = remoteGameState.stats
-//                    )
-//
-//                }
-//
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.d("MainActivity_frd", "databaseError: $error")
-//            }
-//
-//        }
-//        databaseReference.child("games").child("123").addValueEventListener(listener)
-//
-//        onDispose {
-//            databaseReference.child("games").child("123").removeEventListener(listener)
-//        }
-//    }
+    DisposableEffect(Unit) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val remoteGameState = snapshot.getValue(GameState::class.java)
+
+                Log.d("MainActivity_frd", "onDataChange:  $remoteGameState")
+
+                if (remoteGameState != null) {
+                    val updatedGameBoard: List<Player?> = remoteGameState.board.map {
+                        when (it) {
+                            "X" -> Player.X
+                            "O" -> Player.O
+                            else -> null
+                        }
+                    }
+
+                    val latestPlayer =
+                        if (remoteGameState.currentPlayer == "O") Player.O else Player.X
+                    val remoteGamePhase = GamePhase.valueOf(remoteGameState.gamePhase)
+                    val remoteWinner: Player? = when (remoteGameState.winner) {
+                        "X" -> Player.X
+                        "O" -> Player.O
+                        else -> null
+                    }
+
+                    val updatedUIState = TicTacToeUiState(
+                        TicTacToeData(board = updatedGameBoard, currentPlayer = latestPlayer),
+                        gameStat = remoteGameState.stats,
+                        gamePhase = remoteGamePhase,
+                        winner = remoteWinner
+                    )
+
+                    machine.updateStateMachineFromFirebase(updatedUIState)
+                }
+
+            }
+
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("MainActivity_frd", "databaseError: $error")
+            }
+
+        }
+        databaseReference.child("games").child("123").addValueEventListener(listener)
+
+        onDispose {
+            databaseReference.child("games").child("123").removeEventListener(listener)
+        }
+    }
 
 
     val configuration = LocalConfiguration.current
@@ -355,6 +371,9 @@ fun TicTacToeApp() {
         }
     }
 
+    LaunchedEffect(ticTacToeUiState) {
+        updateGameStateToFirebase(ticTacToeUiState)
+    }
 }
 
 @Preview(showBackground = true)
@@ -659,6 +678,8 @@ data class GameState(
     val board: List<String> = List(9) { "" },
     val currentPlayer: String = "X",
     val stats: GameStat = GameStat(),
+    val gamePhase: String = "PLAYING",
+    val winner: String = ""
 )
 
 data class GameStat(
@@ -690,6 +711,10 @@ class TicTacToeMachine(initialState: TicTacToeUiState = TicTacToeUiState()) {
         _state.value = _state.value.copy(
             ticTacToeData = TicTacToeData(), gamePhase = GamePhase.PLAYING, winner = null
         )
+    }
+
+    fun updateStateMachineFromFirebase(remoteUiState: TicTacToeUiState) {
+        _state.value = remoteUiState
     }
 
     companion object {
