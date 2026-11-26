@@ -305,6 +305,11 @@ fun TicTacToeApp() {
         }
     }
 
+    fun applyLocalChange(change: () -> TicTacToeUiState) {
+        val before = machine.state.value
+        val after = change()
+        if (after !== before) updateGameStateToFirebase(after)
+    }
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -325,12 +330,14 @@ fun TicTacToeApp() {
                 )
                 RestartGameLandscape {
 //                    updateGameStateToFirebase()
-                    machine.reset()
+                    applyLocalChange { machine.reset() }
+//                    machine.reset()
                 }
             }
             GameBoardLandscape(
                 board = ticTacToeUiState.ticTacToeData.board, onCellClick = { position ->
-                    machine.dispatch(CellClicked(position))
+                    applyLocalChange { machine.dispatch(CellClicked(position)) }
+//                    machine.dispatch(CellClicked(position))
                 })
         }
 
@@ -345,13 +352,16 @@ fun TicTacToeApp() {
                 ticTacToeUiState.gameStat.draws
             )
             GameBoard(board = ticTacToeUiState.ticTacToeData.board, onCellClick = { position ->
-                machine.dispatch(CellClicked(position))
+
+                applyLocalChange { machine.dispatch(CellClicked(position)) }
+//                machine.dispatch(CellClicked(position))
             })
             PlayerType(currentPlayer = ticTacToeUiState.ticTacToeData.currentPlayer)
             Spacer(Modifier.padding(top = 40.dp))
             RestartGame {
 //                updateGameStateToFirebase()
-                machine.reset()
+                applyLocalChange { machine.reset() }
+//                machine.reset()
             }
         }
     }
@@ -371,9 +381,9 @@ fun TicTacToeApp() {
         }
     }
 
-    LaunchedEffect(ticTacToeUiState) {
-        updateGameStateToFirebase(ticTacToeUiState)
-    }
+//    LaunchedEffect(ticTacToeUiState) {
+//        updateGameStateToFirebase(ticTacToeUiState)
+//    }
 }
 
 @Preview(showBackground = true)
@@ -703,14 +713,16 @@ class TicTacToeMachine(initialState: TicTacToeUiState = TicTacToeUiState()) {
     val state: StateFlow<TicTacToeUiState> = _state.asStateFlow()
 
 
-    fun dispatch(event: CellClicked) {
+    fun dispatch(event: CellClicked): TicTacToeUiState {
         _state.value = makeMove(_state.value, event.position)
+        return _state.value
     }
 
-    fun reset() {
+    fun reset(): TicTacToeUiState {
         _state.value = _state.value.copy(
             ticTacToeData = TicTacToeData(), gamePhase = GamePhase.PLAYING, winner = null
         )
+        return _state.value
     }
 
     fun updateStateMachineFromFirebase(remoteUiState: TicTacToeUiState) {
